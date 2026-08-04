@@ -214,8 +214,12 @@ def mm_kernel(
 def mm(a, b):
     if not a.is_contiguous():
         a = a.contiguous()
-    if b.stride(0) > 1 and b.stride(1) > 1:
-        b = b.contiguous()
+    # spestruct.pack lowering cannot handle a transposed source, so B's inner
+    # (N) dim must be unit-stride. contiguous() is a no-op when N==1 (torch
+    # treats size-1 dims as contiguous regardless of stride), so force a real
+    # row-major copy whenever the N stride isn't already 1.
+    if b.stride(1) != 1:
+        b = torch.empty_like(b, memory_format=torch.contiguous_format).copy_(b)
     # checks constraints
     assert a.shape[1] == b.shape[0], "incompatible dimensions"
     M, K = a.shape
@@ -252,8 +256,12 @@ def mm(a, b):
 def mm_out(a, b, *, out):
     if not a.is_contiguous():
         a = a.contiguous()
-    if b.stride(0) > 1 and b.stride(1) > 1:
-        b = b.contiguous()
+    # spestruct.pack lowering cannot handle a transposed source, so B's inner
+    # (N) dim must be unit-stride. contiguous() is a no-op when N==1 (torch
+    # treats size-1 dims as contiguous regardless of stride), so force a real
+    # row-major copy whenever the N stride isn't already 1.
+    if b.stride(1) != 1:
+        b = torch.empty_like(b, memory_format=torch.contiguous_format).copy_(b)
 
     # checks constraints
     assert a.shape[1] == b.shape[0], "incompatible dimensions"
