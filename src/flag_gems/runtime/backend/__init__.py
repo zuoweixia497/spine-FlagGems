@@ -332,6 +332,13 @@ fn = torch.{_state.device_name}
         )
         # Override current_device to return integer 0 for kernel cache indexing
         setattr(_state.torch_device_object, "current_device", lambda: 0)
+        # Stub get_device_properties so triton_driver_helper doesn't fall through
+        # to triton.runtime.driver.active (which requires an active GPU driver).
+        setattr(
+            _state.torch_device_object,
+            "get_device_properties",
+            lambda device: type("CpuDeviceProperties", (), {"max_shared_mem": 0, "multiprocessor_count": 1})(),
+        )
 
     return _state.torch_device_object
 
