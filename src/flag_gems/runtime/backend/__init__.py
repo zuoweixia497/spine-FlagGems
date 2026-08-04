@@ -310,7 +310,8 @@ def get_torch_backend_device_fn():
 def gen_torch_device_object(vendor_name=None):
     if _state.torch_device_object is not None:
         return _state.torch_device_object
-    _state.device_name = _state.device_name or get_vendor_info(vendor_name).device_name
+    vendor_info = get_vendor_info(vendor_name)
+    _state.device_name = _state.device_name or vendor_info.device_name
     code = f"""
 import torch
 fn = torch.{_state.device_name}
@@ -318,7 +319,7 @@ fn = torch.{_state.device_name}
     _state.torch_device_object = get_codegen_result(code, "fn")
 
     # SPACEMIT CPU backend needs special device guard handling
-    if vendor_name == "spacemit":
+    if vendor_name == "spacemit" or getattr(vendor_info, "vendor_name", None) == "spacemit":
         backends_module = importlib.import_module("flag_gems.runtime.backend._spacemit")
         setattr(
             _state.torch_device_object,
@@ -337,7 +338,7 @@ fn = torch.{_state.device_name}
         setattr(
             _state.torch_device_object,
             "get_device_properties",
-            lambda device: type("CpuDeviceProperties", (), {"max_shared_mem": 0, "multiprocessor_count": 1})(),
+            getattr(backends_module, "_DeviceWrapper").get_device_properties,
         )
 
     return _state.torch_device_object

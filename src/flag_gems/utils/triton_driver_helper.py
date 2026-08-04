@@ -10,4 +10,13 @@ except AttributeError:
     except RuntimeError:
         # CPU/spacemit backend: no GPU driver; return a stub so imports succeed.
         def get_device_properties(device):
-            return type("CpuDeviceProperties", (), {"max_shared_mem": 0, "multiprocessor_count": 1})()
+            return type(
+                "CpuDeviceProperties",
+                (),
+                {
+                    "max_shared_mem": 0,
+                    "multiprocessor_count": 1,
+                    "multi_processor_count": 1,
+                    "total_memory": 64 * 1024**3,
+                },
+            )()

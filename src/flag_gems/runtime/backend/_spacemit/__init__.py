@@ -1,4 +1,6 @@
 import importlib.util
+import os
+from collections import namedtuple
 from typing import Any
 
 from backend_utils import VendorInfoBase  # noqa: E402
@@ -56,6 +58,16 @@ class _DeviceWrapper:
     def current_device():
         """Return device index for kernel cache. CPU backend always uses device 0."""
         return 0
+
+    @staticmethod
+    def get_device_properties(device: Any = None):
+        DeviceProperties = namedtuple(
+            "DeviceProperties", ["multi_processor_count", "total_memory"]
+        )
+        return DeviceProperties(
+            multi_processor_count=os.cpu_count() or 1,
+            total_memory=64 * 1024**3,
+        )
 
 
 CUSTOMIZED_UNUSED_OPS = ()
