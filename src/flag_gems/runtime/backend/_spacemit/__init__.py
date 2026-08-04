@@ -3,13 +3,20 @@ from typing import Any
 
 from backend_utils import VendorInfoBase  # noqa: E402
 
-if importlib.util.find_spec("triton.backends.spine_triton") is not None:
-    from .utils.config_pre_hook import setup_triton_config
+if (
+    importlib.util.find_spec("triton.backends.spine_triton") is not None
+    or importlib.util.find_spec("triton.backends.spacemit") is not None
+):
+    from .utils.config_pre_hook import setup_triton_config  # noqa: E402
 
     setup_triton_config()
 
     import triton  # noqa: E402
-    from triton.backends.spine_triton.driver import CPUDriver  # noqa: E402
+
+    try:
+        from triton.backends.spine_triton.driver import CPUDriver  # noqa: E402
+    except ImportError:
+        from triton.backends.spacemit.driver import CPUDriver  # noqa: E402
 
     triton.runtime.driver.set_active(CPUDriver())  # noqa: E402
 
