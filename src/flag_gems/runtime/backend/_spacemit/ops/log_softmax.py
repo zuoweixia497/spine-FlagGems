@@ -9,8 +9,8 @@ from flag_gems.ops.log_softmax import log_softmax as common_log_softmax
 from flag_gems.utils import libentry
 from flag_gems.utils import tl_extra_shim
 
-from ._rvisa import HAS_SMT_RVISA, _sr_call, f16, f32, smt_rvisa_enabled
-from ._rvisa import tle as srv
+from ..heuristics_config_utils import HAS_SMT_RVISA, _sr_call, f16, f32, smt_rvisa_enabled
+from ..heuristics_config_utils import tle as srv
 
 logger = logging.getLogger(__name__)
 exp = tl_extra_shim.exp

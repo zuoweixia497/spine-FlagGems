@@ -12,8 +12,8 @@ from flag_gems.utils import dim_compress, libentry
 from flag_gems.utils import triton_lang_extension as tle
 from flag_gems.utils.limits import get_dtype_min
 
-from ._rvisa import HAS_SMT_RVISA, _sr_call, f16, f32, smt_rvisa_enabled
-from ._rvisa import tle as srv
+from ..heuristics_config_utils import HAS_SMT_RVISA, _sr_call, f16, f32, smt_rvisa_enabled
+from ..heuristics_config_utils import tle as srv
 
 import os
 

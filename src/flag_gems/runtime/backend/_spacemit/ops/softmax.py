@@ -10,8 +10,8 @@ from flag_gems.utils import tl_extra_shim
 from flag_gems.ops.softmax import softmax as general_softmax
 from flag_gems.ops.softmax import softmax_out as general_softmax_out
 
-from ._rvisa import HAS_SMT_RVISA, _sr_call, f16, f32, smt_rvisa_enabled
-from ._rvisa import tle as srv
+from ..heuristics_config_utils import HAS_SMT_RVISA, _sr_call, f16, f32, smt_rvisa_enabled
+from ..heuristics_config_utils import tle as srv
 
 logger = logging.getLogger(__name__)
 exp = tl_extra_shim.exp
